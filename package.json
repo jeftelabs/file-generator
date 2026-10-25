@@ -1,0 +1,115 @@
+{
+  "name": "@jeftelabs/file-generator",
+  "version": "1.0.0",
+  "description": "Generate in-memory fake files for custom size",
+  "main": "build/index.js",
+  "type": "module",
+  "files": [
+    "build",
+    "!build/tests",
+    "!build/bin"
+  ],
+  "exports": {
+    ".": "./build/index.js"
+  },
+  "engines": {
+    "node": ">=18.16.0"
+  },
+  "scripts": {
+    "pretest": "npm run lint",
+    "test": "c8 npm run quick:test",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "clean": "del-cli build",
+    "copy:files": "copyfiles --flat 'src/files/**/*{.png,.gif,.jpg,.pdf,.docx,.xlsx}' build",
+    "precompile": "npm run lint && npm run clean",
+    "compile": "tsdown && tsc --emitDeclarationOnly --declaration",
+    "postcompile": "npm run copy:files",
+    "build": "npm run compile",
+    "version": "npm run build",
+    "prepublishOnly": "npm run build",
+    "release": "release-it",
+    "quick:test": "node --import=@jeftelabs/exec --enable-source-maps bin/test.ts",
+    "prepare": "husky",
+		"commitlint": "commitlint --edit",
+		"commit": "cz"
+  },
+  "devDependencies": {
+    "@arapucajs/eslint-config": "^1.1.2",
+		"@arapucajs/prettier": "^1.1.1",
+		"@arapucajs/tsconfig": "^1.0.0",
+    "@t8ngs/assert": "^1.0.0",
+    "@t8ngs/runner": "^1.0.0",
+    "@jeftelabs/exec": "^1.0.1",
+    "@types/bytes": "^3.1.5",
+    "@types/node": "^25.0.1",
+    "c8": "^10.1.3",
+    "commitizen": "^4.3.2",
+		"cz-conventional-changelog": "^3.3.0",
+		"husky": "^9.1.7",
+    "copyfiles": "^2.4.1",
+    "del-cli": "^7.0.0",
+    "eslint": "^9.39.1",
+    "file-type": "^21.1.1",
+    "prettier": "^3.7.4",
+    "tsdown": "^0.17.3",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "bytes": "^3.1.2"
+  },
+  "homepage": "https://github.com/jeftelabs/file-generator#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeftelabs/file-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jeftelabs/file-generator/issues"
+  },
+  "keywords": [
+    "file-generator",
+    "fake-file",
+    "faker-file"
+  ],
+  "author": "Jefte Costa <jefteamorim@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "tsdown": {
+    "entry": [
+      "./index.ts"
+    ],
+    "outDir": "./build",
+    "clean": true,
+    "format": "esm",
+    "minify": "dce-only",
+    "fixedExtension": false,
+    "dts": false,
+    "treeshake": false,
+    "sourcemaps": false,
+    "target": "esnext"
+  },
+  "c8": {
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "exclude": [
+      "tests/**"
+    ]
+  },
+  "prettier": "@arapucajs/prettier",
+  "config": {
+		"commitizen": {
+			"path": "./node_modules/cz-conventional-changelog"
+		}
+	},
+	"husky": {
+		"hooks": {
+			"prepare-commit-msg": "exec < /dev/tty && npx cz --hook || true"
+		}
+	}
+}
